@@ -69,8 +69,6 @@ void Tree::printTree(){
 
 
 
-
-
 void Tree:: insert(int key){
     if(!root){
         Node *node=new Node(true);
@@ -80,12 +78,24 @@ void Tree:: insert(int key){
     }
 
 
-    
+    // std::cout<<"I am here"<<std::endl;
 
     Node *leaf=findLeaf(root,key);
+    // std::cout<<"I am here after finding the leaf"<<std::endl;
     auto it=std::lower_bound(leaf->keys.begin(),leaf->keys.end(),key);
     // auto index=it-leaf->keys.begin();
+    // std::cout<<"Before insertion"<<std::endl;
+    // for (auto key:leaf->keys){
+    //     std::cout<<key<<" ";
+    // }
+ 
+    // std::cout<<std::endl;
     leaf->keys.insert(it,key);
+    // std::cout<<"after insertion"<<std::endl;
+    // for (auto key:leaf->keys){
+    //     std::cout<<key<<" ";
+    // }
+    // std::cout<<std::endl;
 
     //Does this leaf need splitting??
     if(leaf->keys.size()>=M){
@@ -159,15 +169,27 @@ void Tree::split(Node *node){
     }
 }
 
+// find leaf method
+
 Tree::Node * Tree::findLeaf(Node *node,int &key){
-    Node *leaf;
+    Node *leaf=new Node(false);
+
+    // std::cout<<"I am here to find the leaf"<<std::endl;
      if(!node) return nullptr;
+    //  std::cout<<"node is not null"<<std::endl;
+      
+        //  std::cout<<node->keys.size()<<std::endl;
+      
      if(node->isLeaf) return node;
+    //  std::cout<<"node "<<node->keys[0]<<"is not leaf"<<std::endl;
      //a binary seach to find the lower boundary
      auto it=std::upper_bound(node->keys.begin(),node->keys.end(),key);
      auto index=it-node->keys.begin();
      node=node->children[index];
-     return findLeaf(node,key);
+    //  std::cout<<"I am here"<<std::endl;
+     leaf=findLeaf(node,key);
+    //  std::cout<<leaf->keys[0]<<std::endl;
+     return leaf;
     
 
 }
@@ -194,6 +216,38 @@ int Tree:: search(int key){
     }
   
     throw std::runtime_error("Key not found");
+   
+}
+
+// Range Query method
+
+std::vector<int> Tree::rangeQuery(int lower, int higher) {
+    std::vector<int> result;
+    
+    if (!root) return result;
+
+    Node* leaf = findLeaf(root, lower);
+    if (!leaf) return result; 
+
+    while (leaf != nullptr) {
+        for (int key : leaf->keys) {
+            if (key > higher) break;
+            if (key >= lower) result.push_back(key);
+            
+        }
+        leaf = leaf->next;  
+        
+    }
+
+
+    return result;
+
+}
+
+
+//Delete key method
+
+void Tree::deleteKey(int key){
    
 }
 

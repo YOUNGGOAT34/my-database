@@ -23,13 +23,14 @@ int M;
 ~Tree();
 
 
-Tree(int M=3):M(M){}
+Tree(int M=3):M(M),root(nullptr){}
 void split(Node *node);
 void printTree();
-
+void deleteKey(int key);
 void insert(int key) ;
 Node* findLeaf(Node *root,int &key);
 int search(int key);
+std::vector<int> rangeQuery(int lower,int higher);
 };
 
 #include "BPlusTree.cpp" 
